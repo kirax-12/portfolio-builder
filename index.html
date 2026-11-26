@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Builder — Bikin Website Portofolio Tanpa Ngoding</title>
+<meta name="description" content="Isi form, lihat preview langsung, unduh file HTML portofolio yang siap dibuka di mana saja. Dibuat oleh Remike Dev.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFF8EC; --ink:#111111; --surface:#FFFFFF;
+  --yellow:#FFD23F; --pink:#FF90E8; --blue:#7AB8FF; --green:#4ADE80; --orange:#FF7A45;
+  --muted:#55534E;
+  --border:2px solid var(--ink);
+  --shadow:6px 6px 0 var(--ink);
+  --shadow-sm:4px 4px 0 var(--ink);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"Space Grotesk","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  font-size:16.5px; line-height:1.55;
+}
+a{color:var(--ink)}
+:focus-visible{outline:3px solid var(--pink); outline-offset:3px; border-radius:4px}
+.mono{font-family:"Space Mono",ui-monospace,Menlo,monospace}
+
+/* Header */
+.site-header{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  padding:12px 24px; background:var(--surface); border-bottom:var(--border);
+}
+.brand{
+  font-weight:700; font-size:1.15rem; text-decoration:none; letter-spacing:-0.02em;
+  background:var(--pink); border:var(--border); border-radius:999px; padding:4px 16px;
+  box-shadow:var(--shadow-sm); transform:rotate(-1.5deg);
+}
+.brand span{background:var(--yellow); border-radius:999px; padding:0 8px; margin-left:4px}
+.header-actions{display:flex; gap:12px; flex-wrap:wrap}
+
+/* Marquee tape */
+.tape{
+  background:var(--ink); color:var(--bg);
+  font-family:"Space Mono",ui-monospace,monospace; font-size:.8rem; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase; white-space:nowrap; overflow:hidden;
+  padding:8px 0; transform:rotate(-0.6deg) scale(1.02);
+}
+.tape span{display:inline-block; padding-right:12px; animation:tape-move 22s linear infinite}
+@keyframes tape-move{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* Buttons */
+.btn{
+  display:inline-block; padding:11px 20px; border-radius:12px; font-weight:700; font-size:.98rem;
+  text-decoration:none; border:var(--border); box-shadow:var(--shadow-sm); cursor:pointer;
+  font-family:inherit; min-height:46px; background:var(--surface); color:var(--ink);
+  transition:transform .08s ease, box-shadow .08s ease;
+}
+.btn:hover{transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink)}
+.btn:active{transform:translate(4px,4px); box-shadow:0 0 0 var(--ink)}
+.btn-pink{background:var(--pink)}
+.btn-green{background:var(--green)}
+.btn-blue{background:var(--blue)}
+.btn-small{padding:8px 14px; min-height:40px; font-size:.9rem}
+
+/* Layout */
+.layout{
+  display:grid; grid-template-columns:470px minmax(0,1fr); gap:28px; align-items:start;
+  max-width:1320px; margin:0 auto; padding:30px 24px 64px;
+}
+.panel{
+  background:var(--surface); border:var(--border); border-radius:20px; box-shadow:var(--shadow);
+  padding:26px;
+}
+.form-panel{position:sticky; top:92px}
+.panel h2{font-size:1.55rem; letter-spacing:-0.02em; line-height:1.05; margin:0}
+.panel-sub{
+  font-family:"Caveat",cursive; font-size:1.4rem; color:var(--muted);
+  transform:rotate(-1.2deg); display:inline-block; margin:2px 0 20px 4px;
+}
+
+/* Form */
+.field{margin-bottom:16px}
+.field label{
+  display:block; font-family:"Space Mono",ui-monospace,monospace; font-size:.74rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.09em; margin-bottom:6px;
+}
+.field input[type="text"], .field input[type="email"], .field input[type="url"], .field textarea{
+  width:100%; border:var(--border); border-radius:12px; padding:11px 14px;
+  font-family:inherit; font-size:1rem; background:#FFFDF6; color:var(--ink);
+}
+.field textarea{resize:vertical; min-height:96px}
+.field input::placeholder, .field textarea::placeholder{color:#A39E93}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.group-title{
+  font-size:1.05rem; font-weight:700; margin:26px 0 12px; padding-top:18px;
+  border-top:2px dashed var(--ink);
+}
+.group-title:first-of-type{border-top:none; padding-top:0; margin-top:6px}
+
+/* Skill chips (form) */
+.skill-add{display:flex; gap:10px}
+.skill-add input{flex:1}
+.chips{display:flex; flex-wrap:wrap; gap:9px; margin-top:12px}
+.chip{
+  display:inline-flex; align-items:center; gap:8px; background:var(--yellow);
+  border:var(--border); border-radius:999px; padding:4px 6px 4px 14px;
+  font-weight:700; font-size:.92rem; box-shadow:3px 3px 0 var(--ink);
+}
+.chip button{
+  background:var(--ink); color:var(--bg); border:none; border-radius:50%;
+  width:22px; height:22px; min-width:22px; cursor:pointer; font-size:.85rem; line-height:1;
+  display:flex; align-items:center; justify-content:center; padding:0;
+}
+.chip button:hover{background:var(--pink); color:var(--ink)}
+.hint{font-size:.85rem; color:var(--muted); margin:8px 0 0}
+
+/* Project rows */
+.project-row{
+  border:var(--border); border-radius:16px; background:#FFFDF6;
+  padding:16px; margin-bottom:14px; box-shadow:var(--shadow-sm);
+}
+.project-row-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px}
+.project-row-head strong{font-size:.98rem}
+.pj-del{
+  background:var(--pink); border:var(--border); border-radius:999px; cursor:pointer;
+  font-family:inherit; font-weight:700; font-size:.8rem; padding:4px 12px; min-height:32px;
+}
+.pj-del:hover{background:var(--ink); color:var(--bg)}
+.project-row .field{margin-bottom:10px}
+.project-row .field:last-child{margin-bottom:0}
+
+/* Swatches */
+.swatches{display:flex; gap:13px; flex-wrap:wrap}
+.swatch{position:relative; display:block; cursor:pointer}
+.swatch input{position:absolute; opacity:0; inset:0; cursor:pointer}
+.swatch .dot{
+  width:46px; height:46px; border-radius:50%; border:var(--border); display:block;
+  box-shadow:3px 3px 0 var(--ink); transition:transform .1s ease;
+}
+.swatch:hover .dot{transform:scale(1.07)}
+.swatch input:checked + .dot{outline:3px solid var(--ink); outline-offset:3px; transform:scale(1.08)}
+.swatch input:focus-visible + .dot{outline:3px solid var(--pink); outline-offset:3px}
+.swatch-name{font-family:"Space Mono",monospace; font-size:.72rem; text-align:center; display:block; margin-top:6px; text-transform:uppercase}
+
+/* Template options */
+.tpl-list{display:grid; gap:12px}
+.tpl{
+  display:block; border:var(--border); border-radius:14px; padding:13px 16px;
+  background:var(--surface); cursor:pointer; box-shadow:var(--shadow-sm);
+}
+.tpl input{position:absolute; opacity:0}
+.tpl strong{display:block; font-size:1rem}
+.tpl span{font-size:.88rem; color:var(--muted)}
+.tpl:has(input:checked){background:var(--yellow)}
+.tpl:has(input:focus-visible){outline:3px solid var(--pink); outline-offset:3px}
+
+/* Form actions */
+.form-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:26px}
+.form-actions .btn{flex:1 1 auto; text-align:center}
+
+/* Preview */
+.preview-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.preview-note{font-family:"Space Mono",monospace; font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+#preview-frame{
+  width:100%; height:880px; border:var(--border); border-radius:18px;
+  box-shadow:var(--shadow); background:#fff; display:block;
+}
+.preview-foot{font-size:.88rem; color:var(--muted); margin:14px 0 0}
+
+/* Footer */
+.site-footer{background:var(--ink); color:var(--bg); padding:30px 24px 42px}
+.site-footer-inner{
+  max-width:1320px; margin:0 auto; display:flex; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; align-items:center;
+}
+.site-footer p{margin:0}
+.site-footer a{color:var(--yellow); font-family:"Space Mono",monospace; font-size:.88rem}
+
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr; padding:22px 16px 48px}
+  .form-panel{position:static}
+  #preview-frame{height:720px}
+}
+@media (max-width:560px){
+  .grid2{grid-template-columns:1fr}
+  .panel{padding:20px}
+  .site-header{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="#top">Portfolio<span>Builder</span></a>
+  <div class="header-actions">
+    <button class="btn btn-blue btn-small" type="button" id="btn-demo-top">Isi Contoh</button>
+    <button class="btn btn-green btn-small" type="button" id="btn-download-top">Unduh HTML ↓</button>
+  </div>
+</header>
+<div class="tape" aria-hidden="true"><span>Isi form * Lihat preview * Unduh HTML * Langsung jadi website * Isi form * Lihat preview * Unduh HTML * Langsung jadi website * Isi form * Lihat preview * Unduh HTML * Langsung jadi website *&nbsp;</span></div>
+
+<main class="layout" id="top">
+  <!-- ============ FORM ============ -->
+  <section class="panel form-panel" aria-label="Formulir data portofolio">
+    <h2>Isi data kamu</h2>
+    <span class="panel-sub">ketik aja, preview-nya ngikut sendiri ↓</span>
+
+    <form id="builder" autocomplete="off">
+      <h3 class="group-title">Profil</h3>
+      <div class="field">
+        <label for="f-nama">Nama</label>
+        <input type="text" id="f-nama" placeholder="cth: Rani Pratama">
+      </div>
+      <div class="field">
+        <label for="f-peran">Peran / Jabatan</label>
+        <input type="text" id="f-peran" placeholder="cth: Desainer UI/UX &amp; Pengembang Web">
+      </div>
+      <div class="field">
+        <label for="f-tagline">Tagline</label>
+        <input type="text" id="f-tagline" placeholder="Satu kalimat yang merangkum kamu">
+      </div>
+      <div class="field">
+        <label for="f-tentang">Tentang Saya</label>
+        <textarea id="f-tentang" placeholder="Ceritakan latar belakang, pengalaman, dan hal yang kamu kejar — 2 sampai 4 kalimat cukup."></textarea>
+      </div>
+
+      <h3 class="group-title">Kontak &amp; Sosial Media</h3>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email" placeholder="halo@emailmu.com">
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="f-github">Link GitHub</label>
+          <input type="url" id="f-github" placeholder="https://github.com/username">
+        </div>
+        <div class="field">
+          <label for="f-linkedin">Link LinkedIn</label>
+          <input type="url" id="f-linkedin" placeholder="https://linkedin.com/in/username">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-instagram">Link Instagram</label>
+        <input type="url" id="f-instagram" placeholder="https://instagram.com/username">
+      </div>
+
+      <h3 class="group-title">Skill</h3>
+      <div class="field">
+        <label for="f-skill">Tambah skill</label>
+        <div class="skill-add">
+          <input type="text" id="f-skill" placeholder="cth: Figma — lalu Enter">
+          <button class="btn btn-blue btn-small" type="button" id="btn-skill">+ Tambah</button>
+        </div>
+        <div class="chips" id="skill-chips"></div>
+        <p class="hint">Klik × pada chip untuk menghapus skill.</p>
+      </div>
+
+      <h3 class="group-title">Project</h3>
+      <div id="project-rows"></div>
+      <button class="btn btn-small" type="button" id="btn-project">+ Tambah Project</button>
+
+      <h3 class="group-title">Warna Aksen</h3>
+      <div class="swatches" role="radiogroup" aria-label="Warna aksen">
+        <label class="swatch"><input type="radio" name="accent" value="#FFD23F" checked><span class="dot" style="background:#FFD23F"></span><span class="swatch-name">Kuning</span></label>
+        <label class="swatch"><input type="radio" name="accent" value="#FF90E8"><span class="dot" style="background:#FF90E8"></span><span class="swatch-name">Pink</span></label>
+        <label class="swatch"><input type="radio" name="accent" value="#7AB8FF"><span class="dot" style="background:#7AB8FF"></span><span class="swatch-name">Biru</span></label>
+        <label class="swatch"><input type="radio" name="accent" value="#4ADE80"><span class="dot" style="background:#4ADE80"></span><span class="swatch-name">Hijau</span></label>
+        <label class="swatch"><input type="radio" name="accent" value="#FF7A45"><span class="dot" style="background:#FF7A45"></span><span class="swatch-name">Oranye</span></label>
+      </div>
+
+      <h3 class="group-title">Template</h3>
+      <div class="tpl-list" role="radiogroup" aria-label="Template portofolio">
+        <label class="tpl"><input type="radio" name="template" value="neo" checked><strong>Neo-Brutalism</strong><span>Berani dan playful — border tebal, bayangan keras, warna flat.</span></label>
+        <label class="tpl"><input type="radio" name="template" value="minimal"><strong>Minimal Bersih</strong><span>Tenang dan lapang — garis tipis, banyak ruang kosong, aksen seperlunya.</span></label>
+        <label class="tpl"><input type="radio" name="template" value="dark"><strong>Gelap Modern</strong><span>Latar gelap elegan, teks terang, aksen menyala di tempat yang tepat.</span></label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-blue" type="button" id="btn-demo">Isi Contoh</button>
+        <button class="btn btn-green" type="button" id="btn-download">Unduh HTML →</button>
+      </div>
+      <p class="hint">File hasil unduhan bernama <span class="mono">portofolio.html</span> — satu file utuh, bisa dibuka langsung atau di-upload ke hosting mana pun.</p>
+    </form>
+  </section>
+
+  <!-- ============ PREVIEW ============ -->
+  <section class="panel preview-panel" aria-label="Preview portofolio">
+    <div class="preview-head">
+      <div>
+        <h2>Preview langsung</h2>
+        <span class="panel-sub">persis kayak file yang bakal kamu unduh ↓</span>
+      </div>
+      <p class="preview-note">live · tanpa refresh</p>
+    </div>
+    <iframe id="preview-frame" title="Preview website portofolio" sandbox="allow-same-origin"></iframe>
+    <p class="preview-foot">Preview di atas adalah dokumen yang sama dengan hasil unduhan — termasuk template dan warna aksen yang sedang dipilih.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <p><strong>Dibuat oleh Remike Dev</strong> — Portfolio Builder</p>
+    <p><a href="#top">Kembali ke atas ↑</a></p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+/* ================= State & helpers ================= */
+var skills = [];
+var $ = function (s) { return document.querySelector(s); };
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+function radioVal(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : "";
+}
+
+/* ================= Skills ================= */
+function renderSkillChips() {
+  var box = $("#skill-chips");
+  box.innerHTML = skills.map(function (s, i) {
+    return '<span class="chip">' + esc(s) +
+      '<button type="button" data-skill-del="' + i + '" aria-label="Hapus skill ' + esc(s) + '">×</button></span>';
+  }).join("");
+}
+function addSkill() {
+  var input = $("#f-skill");
+  var v = input.value.trim();
+  if (!v) return;
+  if (skills.indexOf(v) === -1) skills.push(v);
+  input.value = "";
+  input.focus();
+  renderSkillChips();
+  render();
+}
+$("#btn-skill").addEventListener("click", addSkill);
+$("#f-skill").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") { e.preventDefault(); addSkill(); }
+});
+$("#skill-chips").addEventListener("click", function (e) {
+  var btn = e.target.closest("[data-skill-del]");
+  if (!btn) return;
+  skills.splice(Number(btn.getAttribute("data-skill-del")), 1);
+  renderSkillChips();
+  render();
+});
+
+/* ================= Projects (dynamic rows) ================= */
+function addProjectRow(data) {
+  data = data || {};
+  var rows = $("#project-rows");
+  var idx = rows.children.length + 1;
+  var div = document.createElement("div");
+  div.className = "project-row";
+  div.innerHTML =
+    '<div class="project-row-head"><strong>Project ' + idx + '</strong>' +
+    '<button type="button" class="pj-del">Hapus</button></div>' +
+    '<div class="field"><label>Judul project</label>' +
+    '<input type="text" class="pj-title" placeholder="cth: Aplikasi Catatan Keuangan" value="' + esc(data.title || "") + '"></div>' +
+    '<div class="field"><label>Deskripsi singkat</label>' +
+    '<input type="text" class="pj-desc" placeholder="Satu-dua kalimat tentang project ini" value="' + esc(data.desc || "") + '"></div>' +
+    '<div class="field"><label>Link (opsional)</label>' +
+    '<input type="url" class="pj-link" placeholder="https://…" value="' + esc(data.link || "") + '"></div>';
+  div.querySelector(".pj-del").addEventListener("click", function () {
+    div.remove();
+    renumberProjects();
+    render();
+  });
+  rows.appendChild(div);
+}
+function renumberProjects() {
+  var heads = document.querySelectorAll("#project-rows .project-row-head strong");
+  heads.forEach(function (h, i) { h.textContent = "Project " + (i + 1); });
+}
+$("#btn-project").addEventListener("click", function () { addProjectRow(); render(); });
+
+/* ================= Collect form data ================= */
+function collect() {
+  var projects = [];
+  document.querySelectorAll("#project-rows .project-row").forEach(function (row) {
+    var t = row.querySelector(".pj-title").value.trim();
+    var d = row.querySelector(".pj-desc").value.trim();
+    var l = row.querySelector(".pj-link").value.trim();
+    if (t || d || l) projects.push({ title: t, desc: d, link: l });
+  });
+  return {
+    nama: val("f-nama"),
+    peran: val("f-peran"),
+    tagline: val("f-tagline"),
+    tentang: val("f-tentang"),
+    email: val("f-email"),
+    github: val("f-github"),
+    linkedin: val("f-linkedin"),
+    instagram: val("f-instagram"),
+    skills: skills.slice(),
+    projects: projects,
+    accent: radioVal("accent") || "#FFD23F",
+    template: radioVal("template") || "neo"
+  };
+}
+
+/* ================= Portfolio document generator =================
+   Dipakai untuk preview (iframe srcdoc) DAN file unduhan,
+   jadi keduanya selalu identik. */
+function initials(name) {
+  var parts = name.split(/\s+/).filter(Boolean);
+  if (!parts.length) return "★";
+  return (parts[0].charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : "")).toUpperCase();
+}
+
+function portfolioBody(d) {
+  var year = new Date().getFullYear();
+  var nama = d.nama || "Nama Kamu";
+  var peran = d.peran || "Peran / Jabatan Kamu";
+  var tagline = d.tagline || "Tagline singkat yang merangkum siapa kamu dan apa yang kamu kerjakan.";
+  var tentang = d.tentang || "Tulis cerita singkat tentang dirimu di sini — latar belakang, pengalaman, dan hal yang sedang kamu kejar. Dua sampai empat kalimat yang jujur biasanya jauh lebih menarik daripada daftar panjang.";
+  var email = d.email || "halo@emailmu.com";
+  var skillList = d.skills.length ? d.skills : ["Skill Satu", "Skill Dua", "Skill Tiga"];
+  var projects = d.projects.length ? d.projects : [
+    { title: "Project Pertamamu", desc: "Ceritakan project terbaikmu di sini — masalah apa yang diselesaikan dan hasilnya.", link: "" },
+    { title: "Project Kedua", desc: "Project lain yang menunjukkan rentang kemampuanmu.", link: "" }
+  ];
+
+  var socials = [];
+  socials.push({ label: "Email", url: "mailto:" + email, text: email });
+  if (d.github) socials.push({ label: "GitHub", url: d.github, text: "github.com" });
+  if (d.linkedin) socials.push({ label: "LinkedIn", url: d.linkedin, text: "linkedin.com" });
+  if (d.instagram) socials.push({ label: "Instagram", url: d.instagram, text: "instagram.com" });
+
+  var chips = skillList.map(function (s) { return '<span class="pf-chip">' + esc(s) + "</span>"; }).join("");
+  var cards = projects.map(function (p) {
+    var link = p.link
+      ? '<a class="pf-card-link" href="' + esc(p.link) + '" target="_blank" rel="noopener">Kunjungi Project →</a>'
+      : '<span class="pf-card-soon">Segera hadir</span>';
+    return '<article class="pf-card"><h3>' + esc(p.title || "Project Tanpa Judul") + "</h3><p>" +
+      esc(p.desc || "Belum ada deskripsi.") + "</p>" + link + "</article>";
+  }).join("");
+  var socialLinks = socials.map(function (s) {
+    return '<a class="pf-social" href="' + esc(s.url) + '" target="_blank" rel="noopener"><strong>' +
+      esc(s.label) + "</strong><span>" + esc(s.text) + "</span></a>";
+  }).join("");
+
+  return '' +
+  '<header class="pf-top"><span class="pf-logo">' + esc(initials(nama)) + '</span>' +
+    '<nav class="pf-nav"><a href="#tentang">Tentang</a><a href="#skill">Skill</a><a href="#project">Project</a><a href="#kontak">Kontak</a></nav></header>' +
+  '<main class="pf-main">' +
+    '<section class="pf-hero">' +
+      '<p class="pf-kicker">' + esc(peran) + '</p>' +
+      '<h1 class="pf-name">' + esc(nama) + '</h1>' +
+      '<p class="pf-tag">' + esc(tagline) + '</p>' +
+      '<div class="pf-actions"><a class="pf-btn pf-btn-main" href="mailto:' + esc(email) + '">Hubungi Saya</a>' +
+      '<a class="pf-btn pf-btn-ghost" href="#project">Lihat Project ↓</a></div>' +
+    '</section>' +
+    '<section id="tentang" class="pf-sec"><h2>Tentang Saya</h2><p>' + esc(tentang) + '</p></section>' +
+    '<section id="skill" class="pf-sec"><h2>Skill</h2><div class="pf-chips">' + chips + '</div></section>' +
+    '<section id="project" class="pf-sec"><h2>Project Pilihan</h2><div class="pf-grid">' + cards + '</div></section>' +
+    '<section id="kontak" class="pf-sec"><h2>Kontak</h2>' +
+      '<p>Punya project, peluang kerja, atau sekadar mau ngobrol? Kirim email ke <a href="mailto:' + esc(email) + '">' + esc(email) + '</a> — biasanya dibalas dalam 1×24 jam.</p>' +
+      '<div class="pf-socials">' + socialLinks + '</div></section>' +
+  '</main>' +
+  '<footer class="pf-foot"><p>© ' + year + ' ' + esc(nama) + '</p><p class="pf-credit">Dibuat pakai Portfolio Builder oleh Remike Dev</p></footer>';
+}
+
+function cssNeo(a) {
+  return '' +
+  '*{box-sizing:border-box}html{scroll-behavior:smooth}' +
+  'body{margin:0;background:#FFF8EC;color:#111;font-family:"Space Grotesk","Segoe UI",system-ui,Arial,sans-serif;line-height:1.55;font-size:17px}' +
+  'a{color:#111}' +
+  '.pf-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 24px;background:#fff;border-bottom:2px solid #111}' +
+  '.pf-logo{font-weight:700;background:' + a + ';border:2px solid #111;border-radius:999px;padding:4px 15px;box-shadow:4px 4px 0 #111;transform:rotate(-1.5deg)}' +
+  '.pf-nav{display:flex;gap:18px;flex-wrap:wrap}.pf-nav a{text-decoration:none;font-weight:700;padding:4px 2px}.pf-nav a:hover{background:' + a + ';border-radius:6px}' +
+  '.pf-main{max-width:980px;margin:0 auto;padding:0 24px}' +
+  '.pf-hero{padding:70px 0 54px}' +
+  '.pf-kicker{display:inline-block;background:#fff;border:2px solid #111;border-radius:999px;box-shadow:4px 4px 0 #111;padding:5px 16px;font-family:"Space Mono",monospace;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 22px}' +
+  '.pf-name{font-size:clamp(2.6rem,7vw,4.4rem);line-height:1.0;letter-spacing:-0.03em;margin:0 0 18px}' +
+  '.pf-tag{font-size:1.2rem;color:#55534E;max-width:34ch;margin:0 0 30px}' +
+  '.pf-actions{display:flex;gap:14px;flex-wrap:wrap}' +
+  '.pf-btn{display:inline-block;padding:13px 24px;border-radius:12px;font-weight:700;text-decoration:none;border:2px solid #111;box-shadow:4px 4px 0 #111;min-height:50px}' +
+  '.pf-btn-main{background:' + a + '}.pf-btn-ghost{background:#fff}' +
+  '.pf-sec{padding:46px 0;border-top:2px dashed #111}' +
+  '.pf-sec h2{font-size:clamp(1.8rem,4.5vw,2.5rem);letter-spacing:-0.02em;line-height:1.05;margin:0 0 20px}' +
+  '.pf-sec p{color:#3E3C37;max-width:64ch}' +
+  '.pf-chips{display:flex;flex-wrap:wrap;gap:11px}' +
+  '.pf-chip{background:#fff;border:2px solid #111;border-radius:999px;padding:6px 16px;font-weight:700;box-shadow:3px 3px 0 #111}' +
+  '.pf-chip:nth-child(3n){background:' + a + '}' +
+  '.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px}' +
+  '.pf-card{background:#fff;border:2px solid #111;border-radius:18px;box-shadow:6px 6px 0 #111;padding:24px}' +
+  '.pf-card:nth-child(odd){transform:rotate(-0.5deg)}.pf-card:nth-child(even){transform:rotate(0.5deg)}' +
+  '.pf-card h3{margin:0 0 10px;font-size:1.3rem}.pf-card p{margin:0;color:#3E3C37}' +
+  '.pf-card-link{display:inline-block;margin-top:16px;font-weight:700;background:#111;color:#FFF8EC;text-decoration:none;padding:9px 18px;border-radius:10px;border:2px solid #111}' +
+  '.pf-card-link:hover{background:' + a + ';color:#111}' +
+  '.pf-card-soon{display:inline-block;margin-top:16px;font-family:"Space Mono",monospace;font-size:.82rem;color:#55534E}' +
+  '.pf-socials{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}' +
+  '.pf-social{display:block;background:#fff;border:2px solid #111;border-radius:14px;box-shadow:4px 4px 0 #111;padding:14px 18px;text-decoration:none}' +
+  '.pf-social strong{display:block}.pf-social span{font-family:"Space Mono",monospace;font-size:.85rem;color:#55534E}' +
+  '.pf-foot{background:#111;color:#FFF8EC;padding:28px 24px 38px;margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}' +
+  '.pf-foot p{margin:0}.pf-credit{font-family:"Space Mono",monospace;font-size:.82rem;color:' + a + '}' +
+  '@media (max-width:640px){.pf-hero{padding:46px 0 40px}.pf-main{padding:0 16px}}';
+}
+
+function cssMinimal(a) {
+  return '' +
+  '*{box-sizing:border-box}html{scroll-behavior:smooth}' +
+  'body{margin:0;background:#FBFAF7;color:#1C1B18;font-family:"Inter","Segoe UI",system-ui,Arial,sans-serif;line-height:1.65;font-size:16.5px}' +
+  'a{color:' + a + '}' +
+  '.pf-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:22px 28px;max-width:920px;margin:0 auto}' +
+  '.pf-logo{font-weight:700;letter-spacing:-0.02em;font-size:1.05rem}' +
+  '.pf-nav{display:flex;gap:22px;flex-wrap:wrap}.pf-nav a{text-decoration:none;color:#6E6A5E;font-size:.95rem}.pf-nav a:hover{color:#1C1B18}' +
+  '.pf-main{max-width:920px;margin:0 auto;padding:0 28px}' +
+  '.pf-hero{padding:72px 0 60px}' +
+  '.pf-kicker{font-family:"Space Mono",monospace;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:' + a + ';margin:0 0 18px;filter:brightness(0.82)}' +
+  '.pf-name{font-size:clamp(2.3rem,6vw,3.6rem);line-height:1.08;letter-spacing:-0.025em;font-weight:700;margin:0 0 16px}' +
+  '.pf-tag{font-size:1.15rem;color:#6E6A5E;max-width:36ch;margin:0 0 32px}' +
+  '.pf-actions{display:flex;gap:12px;flex-wrap:wrap}' +
+  '.pf-btn{display:inline-block;padding:12px 26px;border-radius:999px;font-weight:600;text-decoration:none;min-height:48px}' +
+  '.pf-btn-main{background:#1C1B18;color:#FBFAF7}.pf-btn-ghost{background:transparent;color:#1C1B18;border:1px solid #D9D4C7}' +
+  '.pf-sec{padding:44px 0;border-top:1px solid #E7E2D6}' +
+  '.pf-sec h2{font-family:"Space Mono",monospace;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#6E6A5E;margin:0 0 20px}' +
+  '.pf-sec p{color:#3E3C37;max-width:62ch}' +
+  '.pf-chips{display:flex;flex-wrap:wrap;gap:9px}' +
+  '.pf-chip{background:#fff;border:1px solid #E0DACB;border-radius:999px;padding:6px 15px;font-size:.94rem}' +
+  '.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}' +
+  '.pf-card{background:#fff;border:1px solid #E7E2D6;border-radius:14px;padding:24px}' +
+  '.pf-card h3{margin:0 0 8px;font-size:1.2rem;letter-spacing:-0.01em}.pf-card p{margin:0;color:#55534E}' +
+  '.pf-card-link{display:inline-block;margin-top:14px;font-weight:600;text-decoration:none}.pf-card-link:hover{text-decoration:underline}' +
+  '.pf-card-soon{display:inline-block;margin-top:14px;font-size:.88rem;color:#A39E93}' +
+  '.pf-socials{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}' +
+  '.pf-social{display:block;background:#fff;border:1px solid #E7E2D6;border-radius:12px;padding:13px 17px;text-decoration:none;color:#1C1B18}' +
+  '.pf-social strong{display:block}.pf-social span{font-size:.86rem;color:#6E6A5E}' +
+  '.pf-foot{max-width:920px;margin:24px auto 0;padding:26px 28px 40px;border-top:1px solid #E7E2D6;color:#6E6A5E;font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}' +
+  '.pf-foot p{margin:0}.pf-credit{font-size:.84rem}' +
+  '@media (max-width:640px){.pf-hero{padding:48px 0 42px}.pf-main{padding:0 18px}.pf-top{padding:18px}}';
+}
+
+function cssDark(a) {
+  return '' +
+  '*{box-sizing:border-box}html{scroll-behavior:smooth}' +
+  'body{margin:0;background:#101218;color:#EDEEF2;font-family:"Space Grotesk","Segoe UI",system-ui,Arial,sans-serif;line-height:1.6;font-size:17px}' +
+  'a{color:' + a + '}' +
+  '.pf-top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 24px;background:#171A21;border-bottom:1px solid #262B36}' +
+  '.pf-logo{font-weight:700;background:' + a + ';color:#101218;border-radius:10px;padding:5px 14px}' +
+  '.pf-nav{display:flex;gap:20px;flex-wrap:wrap}.pf-nav a{text-decoration:none;color:#B9BDC9;font-weight:600;padding:4px 2px}.pf-nav a:hover{color:' + a + '}' +
+  '.pf-main{max-width:980px;margin:0 auto;padding:0 24px}' +
+  '.pf-hero{padding:74px 0 56px}' +
+  '.pf-kicker{font-family:"Space Mono",monospace;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:' + a + ';margin:0 0 20px}' +
+  '.pf-name{font-size:clamp(2.6rem,7vw,4.3rem);line-height:1.02;letter-spacing:-0.03em;margin:0 0 18px}' +
+  '.pf-tag{font-size:1.18rem;color:#A6ABB9;max-width:36ch;margin:0 0 32px}' +
+  '.pf-actions{display:flex;gap:14px;flex-wrap:wrap}' +
+  '.pf-btn{display:inline-block;padding:13px 26px;border-radius:12px;font-weight:700;text-decoration:none;min-height:50px}' +
+  '.pf-btn-main{background:' + a + ';color:#101218}.pf-btn-ghost{background:#171A21;color:#EDEEF2;border:1px solid #2C323F}' +
+  '.pf-sec{padding:46px 0;border-top:1px solid #232833}' +
+  '.pf-sec h2{font-size:clamp(1.7rem,4.5vw,2.4rem);letter-spacing:-0.02em;margin:0 0 20px}' +
+  '.pf-sec p{color:#C3C8D2;max-width:64ch}' +
+  '.pf-chips{display:flex;flex-wrap:wrap;gap:10px}' +
+  '.pf-chip{background:#171A21;border:1px solid #2C323F;border-radius:999px;padding:6px 16px;font-weight:600}' +
+  '.pf-chip:nth-child(3n){border-color:' + a + ';color:' + a + '}' +
+  '.pf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}' +
+  '.pf-card{background:#171A21;border:1px solid #262B36;border-radius:16px;padding:24px}' +
+  '.pf-card h3{margin:0 0 10px;font-size:1.3rem}.pf-card p{margin:0;color:#A6ABB9}' +
+  '.pf-card-link{display:inline-block;margin-top:16px;font-weight:700;text-decoration:none}.pf-card-link:hover{text-decoration:underline}' +
+  '.pf-card-soon{display:inline-block;margin-top:16px;font-family:"Space Mono",monospace;font-size:.82rem;color:#7C828F}' +
+  '.pf-socials{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px;margin-top:8px}' +
+  '.pf-social{display:block;background:#171A21;border:1px solid #262B36;border-radius:12px;padding:14px 18px;text-decoration:none;color:#EDEEF2}' +
+  '.pf-social strong{display:block}.pf-social span{font-family:"Space Mono",monospace;font-size:.84rem;color:#7C828F}' +
+  '.pf-foot{border-top:1px solid #232833;color:#7C828F;padding:28px 24px 38px;margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}' +
+  '.pf-foot p{margin:0}.pf-credit{font-family:"Space Mono",monospace;font-size:.82rem;color:' + a + '}' +
+  '@media (max-width:640px){.pf-hero{padding:48px 0 40px}.pf-main{padding:0 16px}}';
+}
+
+function buildStandalone(d) {
+  var css = d.template === "minimal" ? cssMinimal(d.accent)
+          : d.template === "dark" ? cssDark(d.accent)
+          : cssNeo(d.accent);
+  var nama = d.nama || "Nama Kamu";
+  var peran = d.peran || "Portofolio";
+  return '<!DOCTYPE html>\n<html lang="id">\n<head>\n<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<title>' + esc(nama) + ' — ' + esc(peran) + '</title>\n' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+    '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">\n' +
+    '<style>' + css + '</style>\n</head>\n<body>\n' + portfolioBody(d) + '\n</body>\n</html>';
+}
+
+/* ================= Render preview ================= */
+var frame = $("#preview-frame");
+function render() {
+  frame.srcdoc = buildStandalone(collect());
+}
+$("#builder").addEventListener("input", render);
+$("#builder").addEventListener("change", render);
+document.querySelectorAll('input[name="accent"], input[name="template"]').forEach(function (r) {
+  r.addEventListener("change", render);
+});
+
+/* ================= Isi Contoh ================= */
+var DEMO = {
+  nama: "Rani Pratama",
+  peran: "Desainer UI/UX & Pengembang Front-End",
+  tagline: "Bikin tampilan web yang rapi, cepat, dan gampang dipakai orang.",
+  tentang: "Saya desainer sekaligus pengembang front-end dengan pengalaman 3 tahun mengerjakan website untuk UMKM dan startup lokal. Fokus saya di riset pengguna sederhana, design system yang konsisten, dan kode yang bersih. Di luar kerja, saya suka mendokumentasikan proses desain dan berbagi template gratis untuk pemula.",
+  email: "halo@ranipratama.id",
+  github: "https://github.com/ranipratama",
+  linkedin: "https://linkedin.com/in/ranipratama",
+  instagram: "https://instagram.com/ranipratama",
+  skills: ["Figma", "HTML & CSS", "JavaScript", "React", "Riset Pengguna", "Design System"],
+  projects: [
+    { title: "Aplikasi Catatan Keuangan", desc: "Web app pencatat pengeluaran harian dengan grafik per kategori dan ekspor CSV. Dipakai 1.200+ pengguna di bulan pertama.", link: "https://example.com/keuangan" },
+    { title: "Website Kedai Kopi Senja", desc: "Landing page + katalog menu untuk kedai kopi lokal; pemesanan via WhatsApp naik 40% setelah rilis.", link: "https://example.com/kopi-senja" },
+    { title: "Dashboard Inventaris Toko", desc: "Dashboard stok barang real-time untuk toko retail — filter, pencarian, dan laporan harian dalam satu layar.", link: "" }
+  ],
+  accent: "#FF90E8",
+  template: "neo"
+};
+function fillDemo() {
+  $("#f-nama").value = DEMO.nama;
+  $("#f-peran").value = DEMO.peran;
+  $("#f-tagline").value = DEMO.tagline;
+  $("#f-tentang").value = DEMO.tentang;
+  $("#f-email").value = DEMO.email;
+  $("#f-github").value = DEMO.github;
+  $("#f-linkedin").value = DEMO.linkedin;
+  $("#f-instagram").value = DEMO.instagram;
+  skills = DEMO.skills.slice();
+  renderSkillChips();
+  $("#project-rows").innerHTML = "";
+  DEMO.projects.forEach(function (p) { addProjectRow(p); });
+  renumberProjects();
+  document.querySelectorAll('input[name="accent"]').forEach(function (r) { r.checked = r.value === DEMO.accent; });
+  document.querySelectorAll('input[name="template"]').forEach(function (r) { r.checked = r.value === DEMO.template; });
+  render();
+}
+$("#btn-demo").addEventListener("click", fillDemo);
+$("#btn-demo-top").addEventListener("click", fillDemo);
+
+/* ================= Unduh HTML ================= */
+function download() {
+  var html = buildStandalone(collect());
+  var blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "portofolio.html";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+}
+$("#btn-download").addEventListener("click", download);
+$("#btn-download-top").addEventListener("click", download);
+
+/* ================= Init ================= */
+addProjectRow();
+addProjectRow();
+render();
+</script>
+</body>
+</html>
